@@ -17,21 +17,22 @@ function SwapPlugin() {
 		dragStart({ dragEl }) {
 			lastSwapEl = dragEl;
 		},
+		dragOver({ target, activeSortable }) {
+			if (!activeSortable.options.swap) return;
+			if (target && lastSwapEl && target !== lastSwapEl) {
+				toggleClass(lastSwapEl, this.options.swapClass, false);
+				// If dragOverValid doesn't set this, target isn't valid
+				lastSwapEl = null;
+			}
+		},
 		dragOverValid({ completed, target, onMove, activeSortable, changed, cancel }) {
 			if (!activeSortable.options.swap) return;
 			let el = this.sortable.el,
 				options = this.options;
 			if (target && target !== el) {
-				let prevSwapEl = lastSwapEl;
 				if (onMove(target) !== false) {
 					toggleClass(target, options.swapClass, true);
 					lastSwapEl = target;
-				} else {
-					lastSwapEl = null;
-				}
-
-				if (prevSwapEl && prevSwapEl !== lastSwapEl) {
-					toggleClass(prevSwapEl, options.swapClass, false);
 				}
 			}
 			changed();

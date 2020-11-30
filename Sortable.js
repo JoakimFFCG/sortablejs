@@ -3003,29 +3003,32 @@
         var dragEl = _ref.dragEl;
         lastSwapEl = dragEl;
       },
-      dragOverValid: function dragOverValid(_ref2) {
-        var completed = _ref2.completed,
-            target = _ref2.target,
-            onMove = _ref2.onMove,
-            activeSortable = _ref2.activeSortable,
-            changed = _ref2.changed,
-            cancel = _ref2.cancel;
+      dragOver: function dragOver(_ref2) {
+        var target = _ref2.target,
+            activeSortable = _ref2.activeSortable;
+        if (!activeSortable.options.swap) return;
+
+        if (target && lastSwapEl && target !== lastSwapEl) {
+          toggleClass(lastSwapEl, this.options.swapClass, false); // If dragOverValid doesn't set this, target isn't valid
+
+          lastSwapEl = null;
+        }
+      },
+      dragOverValid: function dragOverValid(_ref3) {
+        var completed = _ref3.completed,
+            target = _ref3.target,
+            onMove = _ref3.onMove,
+            activeSortable = _ref3.activeSortable,
+            changed = _ref3.changed,
+            cancel = _ref3.cancel;
         if (!activeSortable.options.swap) return;
         var el = this.sortable.el,
             options = this.options;
 
         if (target && target !== el) {
-          var prevSwapEl = lastSwapEl;
-
           if (onMove(target) !== false) {
             toggleClass(target, options.swapClass, true);
             lastSwapEl = target;
-          } else {
-            lastSwapEl = null;
-          }
-
-          if (prevSwapEl && prevSwapEl !== lastSwapEl) {
-            toggleClass(prevSwapEl, options.swapClass, false);
           }
         }
 
@@ -3033,10 +3036,10 @@
         completed(true);
         cancel();
       },
-      drop: function drop(_ref3) {
-        var activeSortable = _ref3.activeSortable,
-            putSortable = _ref3.putSortable,
-            dragEl = _ref3.dragEl;
+      drop: function drop(_ref4) {
+        var activeSortable = _ref4.activeSortable,
+            putSortable = _ref4.putSortable,
+            dragEl = _ref4.dragEl;
         var toSortable = putSortable || this.sortable;
         var options = this.options;
         lastSwapEl && toggleClass(lastSwapEl, options.swapClass, false);
